@@ -1,0 +1,226 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "speaking.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "SpeakingAssessmentService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "speakingIntonationErrorDetail": {
+      "type": "object",
+      "properties": {
+        "clauseText": {
+          "type": "string"
+        },
+        "actualIntonationType": {
+          "type": "string"
+        },
+        "expectedIntonationType": {
+          "type": "string"
+        },
+        "errorDescription": {
+          "type": "string"
+        },
+        "improvementAdvice": {
+          "type": "string"
+        },
+        "errorStartIndex": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "errorEndIndex": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "speakingPhonemeErrorDetail": {
+      "type": "object",
+      "properties": {
+        "transcribedWord": {
+          "type": "string"
+        },
+        "expectedWord": {
+          "type": "string"
+        },
+        "expectedPronunciation": {
+          "type": "string"
+        },
+        "actualPronunciation": {
+          "type": "string"
+        },
+        "errorType": {
+          "type": "string"
+        },
+        "errorStartIndex": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "errorEndIndex": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "substituted": {
+          "type": "string"
+        },
+        "errorDescription": {
+          "type": "string"
+        },
+        "improvementAdvice": {
+          "type": "string"
+        }
+      }
+    },
+    "speakingPronunciationAssessment": {
+      "type": "object",
+      "properties": {
+        "actualPhoneticTranscription": {
+          "type": "string"
+        },
+        "expectedPhoneticTranscription": {
+          "type": "string"
+        },
+        "phonemeErrorDetails": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/speakingPhonemeErrorDetail"
+          }
+        },
+        "wordStressErrorDetails": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/speakingWordStressErrorDetail"
+          }
+        },
+        "intonationErrorDetails": {
+          "$ref": "#/definitions/speakingIntonationErrorDetail"
+        }
+      }
+    },
+    "speakingScore": {
+      "type": "object",
+      "properties": {
+        "overall": {
+          "type": "number",
+          "format": "float"
+        },
+        "fluencyCoherence": {
+          "type": "number",
+          "format": "float"
+        },
+        "lexicalResource": {
+          "type": "number",
+          "format": "float"
+        },
+        "grammaticalRangeAccuracy": {
+          "type": "number",
+          "format": "float"
+        },
+        "pronunciation": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "speakingSpeakingAssessment": {
+      "type": "object",
+      "properties": {
+        "speechTranscription": {
+          "type": "string"
+        },
+        "pronunciationAssessment": {
+          "$ref": "#/definitions/speakingPronunciationAssessment"
+        },
+        "score": {
+          "$ref": "#/definitions/speakingScore"
+        },
+        "overallAdvices": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "speakingWordStressErrorDetail": {
+      "type": "object",
+      "properties": {
+        "word": {
+          "type": "string"
+        },
+        "syllableBreakdown": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "errorType": {
+          "type": "string"
+        },
+        "actualStressedSyllableIndex": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "expectedStressedSyllableIndex": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "errorDescription": {
+          "type": "string"
+        },
+        "improvementAdvice": {
+          "type": "string"
+        },
+        "errorStartIndex": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "errorEndIndex": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    }
+  }
+}

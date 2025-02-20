@@ -1,76 +1,161 @@
-Project simple_bank {
-  database_type: 'PostgreSQL'
-  Note: '''
-    # Simple Bank Database
-  '''
-}
-
-Table users as U {
-  username varchar [pk]
-  role varchar [not null, default: 'depositor']
-  hashed_password varchar [not null]
-  full_name varchar [not null]
-  email varchar [unique, not null]
-  is_email_verified bool [not null, default: false]
-  password_changed_at timestamptz [not null, default: '0001-01-01']
-  created_at timestamptz [not null, default: `now()`]
-}
-
-Table verify_emails {
-  id bigserial [pk]
-  username varchar [ref: > U.username, not null]
-  email varchar [not null]
-  secret_code varchar [not null]
-  is_used bool [not null, default: false]
-  created_at timestamptz [not null, default: `now()`]
-  expired_at timestamptz [not null, default: `now() + interval '15 minutes'`]
-}
-
-Table accounts as A {
-  id bigserial [pk]
-  owner varchar [ref: > U.username, not null]
-  balance bigint [not null]
-  currency varchar [not null]
-  created_at timestamptz [not null, default: `now()`]
+Table Organization {
+  id integer [primary key]
+  name varchar [not null]
   
-  Indexes {
-    owner
-    (owner, currency) [unique]
+  indexes {
+    name
   }
 }
 
-Table entries {
-  id bigserial [pk]
-  account_id bigint [ref: > A.id, not null]
-  amount bigint [not null, note: 'can be negative or positive']
-  created_at timestamptz [not null, default: `now()`]
-  
-  Indexes {
-    account_id
+Table Student {
+  id integer [primary key]
+  organization_id integer [not null, ref: > Organization.id]
+  name varchar [not null]
+  email varchar [not null, unique]
+
+  indexes {
+    organization_id
+    email
+    (organization_id, email)
   }
 }
 
-Table transfers {
-  id bigserial [pk]
-  from_account_id bigint [ref: > A.id, not null]
-  to_account_id bigint [ref: > A.id, not null]
-  amount bigint [not null, note: 'must be positive']
-  created_at timestamptz [not null, default: `now()`]
-  
-  Indexes {
-    from_account_id
-    to_account_id
-    (from_account_id, to_account_id)
+Table Teacher {
+  id integer [primary key]
+  organization_id integer [not null, ref: > Organization.id]
+  name varchar [not null]
+  email varchar [not null, unique]
+  indexes {
+    organization_id
+    email
+    (organization_id, email)
   }
 }
 
-Table sessions {
-  id uuid [pk]
-  username varchar [ref: > U.username, not null]
-  refresh_token varchar [not null]
-  user_agent varchar [not null]
-  client_ip varchar [not null]
-  is_blocked boolean [not null, default: false]
-  expires_at timestamptz [not null]
-  created_at timestamptz [not null, default: `now()`]
+Table Class {
+  id integer [primary key]
+  organization_id integer [not null, ref: > Organization.id]
+  name varchar [not null]
+  status enum('active', 'inactive') [not null, default: 'active']
+
+  
+  indexes {
+    organization_id
+    (organization_id, name)
+  }
 }
+
+
+Table ClassTeacherMapping {
+  id integer [primary key]
+  class_id integer [not null, ref: > Class.id]
+  teacher_id integer [not null, ref: > Teacher.id]
+  is_primary boolean [not null, default: false]
+
+  indexes {
+    (class_id, teacher_id)
+  }
+}
+
+Table Topic {
+  id integer [primary key]
+  organization_id integer [not null, ref: > Organization.id]
+  name varchar [not null]
+  description text
+  status enum('active', 'inactive') [not null, default: 'active']
+
+  indexes {
+    organization_id
+    (organization_id, name)
+  }
+}
+
+Table Skill {
+  id integer [primary key]
+  topic_id integer [not null, ref: > Topic.id]
+  name varchar [not null]
+  description text
+  parent_skill_id integer [ref: > Skill.id]
+
+  
+  indexes {
+    topic_id
+    parent_skill_id
+  }
+}
+
+Table MockTest {
+  id integer [primary key]
+  organization_id integer [not null, ref: > Organization.id]
+  topic_id integer [not null, ref: > Topic.id]
+  name varchar [not null]
+  description text
+  total_duration integer [not null] // in minutes
+  status enum('draft', 'published', 'archived') [not null, default: 'draft']
+  indexes {
+    organization_id
+    topic_id
+    (organization_id, topic_id)
+  }
+}
+
+Table MockTestSkill {
+  id integer [primary key]
+  mock_test_id integer [not null, ref: > MockTest.id]
+  skill_id integer [not null, ref: > Skill.id]
+  order_index integer [not null]
+  duration integer [not null] // in minutes
+
+  indexes {
+    (mock_test_id, skill_id)
+    (mock_test_id, order_index)
+  }
+}
+
+Table TestSession {
+  id integer [primary key]
+  mock_test_id integer [not null, ref: > MockTest.id]
+  student_id integer [not null, ref: > Student.id]
+  class_id integer [ref: > Class.id]
+  status enum('pending', 'in_progress', 'completed') [not null, default: 'pending']
+  started_at timestamp
+  completed_at timestamp
+  
+  indexes {
+    mock_test_id
+    student_id
+    class_id
+    (mock_test_id, student_id)
+  }
+}
+
+Table TestSubmission {
+  id integer [primary key]
+  test_session_id integer [not null, ref: > TestSession.id]
+  mock_test_skill_id integer [not null, ref: > MockTestSkill.id]
+  submission_type enum('audio', 'video', 'text') [not null]
+  submission_url text [not null]
+  transcript text
+  auto_graded_score float
+
+  indexes {
+    test_session_id
+    mock_test_skill_id
+    (test_session_id, mock_test_skill_id)
+  }
+}
+
+Table TestResult {
+  id integer [primary key]
+  test_submission_id integer [not null, ref: > TestSubmission.id]
+  score float [not null]
+  feedback text
+
+  
+  indexes {
+    test_submission_id
+  }
+}
+
+
+Ref: "MockTest"."name" < "MockTest"."description"

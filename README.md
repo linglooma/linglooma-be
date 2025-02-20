@@ -40,7 +40,7 @@
 
 ### Setup infrastructure
 
-- Create the bank-network
+- Create the linglooma-network
 
     ``` bash
     make network
@@ -52,7 +52,7 @@
     make postgres
     ```
 
-- Create simple_bank database:
+- Create linglooma database:
 
     ```bash
     make createdb
@@ -90,7 +90,7 @@
     make db_docs
     ```
 
-- Access the DB documentation at [this address](https://dbdocs.io/techschool.guru/simple_bank). Password: `secret`
+- Access the DB documentation at [this address](https://dbdiagram.io/d/Linglooma-64b2a32f02bd1c4a5e1ff24e). 
 
 ### How to generate code
 
