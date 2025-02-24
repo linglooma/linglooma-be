@@ -107,6 +107,14 @@
         },
         "improvementAdvice": {
           "type": "string"
+        },
+        "errorStartIndexTranscriptio": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "errorEndIndexTranscription": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

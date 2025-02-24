@@ -71,4 +71,11 @@ evans:
 redis:
 	docker run --name redis -p 6379:6379 -d redis:8.0-M03-alpine
 
+build:
+	go build -o main cmd/main.go
+
+syncing:
+	rsync -avz ./ automl@112.137.129.161:/home/automl/Xuanan/Linglooma/linglooma-be/ && \
+	ssh automl@112.137.129.161 "tmux send-keys -t 4 C-c Enter; tmux send-keys -t 4 'make server' Enter;"
+
 .PHONY: network postgres createdb dropdb migrateup migratedown migrateup1 migratedown1 new_migration db_docs db_schema sqlc test server mock proto evans redis

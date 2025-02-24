@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/go-chi/chi/v5 v5.2.1
+	github.com/go-chi/cors v1.2.1
 	github.com/golang-migrate/migrate/v4 v4.18.2
 	github.com/rakyll/statik v0.1.7
 	github.com/rs/zerolog v1.33.0

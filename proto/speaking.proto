@@ -36,6 +36,8 @@ message PhonemeErrorDetail {
     string substituted = 8;
     string errorDescription = 9;
     string improvementAdvice = 10;
+    int32 errorStartIndexTranscriptio = 11;
+    int32 errorEndIndexTranscription = 12;
 }
 
 message WordStressErrorDetail {
